@@ -260,10 +260,62 @@ VALUES ('Чоко', 'вперед, стоять', '2020-03-19'),
 ```
 10. Удалив из таблицы верблюдов, т.к. верблюдов решили перевезти в другой
     питомник на зимовку. Объединить таблицы лошади, и ослы в одну таблицу.
+```sql
+DELETE FROM camels;
 
-11. 
+CREATE TABLE horses_and_donkeys SELECT * FROM horses
+UNION SELECT * FROM donkeys;
+```
+11. Создать новую таблицу “молодые животные” в которую попадут все
+    животные старше 1 года, но младше 3 лет и в отдельном столбце с точностью
+    до месяца подсчитать возраст животных в новой таблице
+```sql
+CREATE TEMPORARY TABLE all_animals
+SELECT * FROM dogs
+UNION SELECT * FROM cats
+UNION SELECT * FROM hamsters
+UNION SELECT * FROM horses
+UNION SELECT * FROM camels
+UNION SELECT * FROM donkeys;
 
-
+CREATE TABLE young_animals
+SELECT name, commands, birthday, animal_kind_id, TIMESTAMPDIFF(MONTH, birthday, CURDATE()) AS age_in_month
+FROM all_animals
+WHERE birthday BETWEEN ADDDATE(CURDATE(), INTERVAL -3 YEAR) AND ADDDATE(CURDATE(), INTERVAL -1 YEAR);
+```
+12. Объединить все таблицы в одну, при этом сохраняя поля, указывающие на
+    прошлую принадлежность к старым таблицам.
+```sql
+SELECT dogs.name, dogs.commands, dogs.birthday, pets.animal_kind, animals.animal_type
+FROM dogs
+LEFT JOIN pets ON pets.id = dogs.animal_kind_id
+LEFT JOIN animals ON animals.id=pets.animal_type_id
+UNION
+SELECT cats.name, cats.commands, cats.birthday, pets.animal_kind, animals.animal_type
+FROM cats
+LEFT JOIN pets ON pets.id = cats.animal_kind_id
+LEFT JOIN animals ON animals.id=pets.animal_type_id
+UNION
+SELECT hamsters.name, hamsters.commands, hamsters.birthday, pets.animal_kind, animals.animal_type
+FROM hamsters
+LEFT JOIN pets ON pets.id = hamsters.animal_kind_id
+LEFT JOIN animals ON animals.id=pets.animal_type_id
+UNION
+SELECT horses.name, horses.commands, horses.birthday, pack_animals.animal_kind, animals.animal_type
+FROM horses
+LEFT JOIN pack_animals ON pack_animals.id = horses.animal_kind_id
+LEFT JOIN animals ON animals.id=pack_animals.animal_type_id
+UNION
+SELECT camels.name, camels.commands, camels.birthday, pack_animals.animal_kind, animals.animal_type
+FROM camels
+LEFT JOIN pack_animals ON pack_animals.id = camels.animal_kind_id
+LEFT JOIN animals ON animals.id=pack_animals.animal_type_id
+UNION
+SELECT donkeys.name, donkeys.commands, donkeys.birthday, pack_animals.animal_kind, animals.animal_type
+FROM donkeys
+LEFT JOIN pack_animals ON pack_animals.id = donkeys.animal_kind_id
+LEFT JOIN animals ON animals.id=pack_animals.animal_type_id;
+```
 * **
 ## *Приложение система учёта питомника (Java)*
 * **
