@@ -37,8 +37,29 @@ public class Controller {
         return repository.getAllAnimals();
     }
 
+    public boolean checkAnimal(String name) {
+        List<Animal> animals = repository.getAllAnimals();
+        for (Animal animal : animals) {
+            if (animal.getName().equalsIgnoreCase(name)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void editAnimal(Animal animal) {
         validateAnimalData(animal);
+        repository.updateAnimal(animal);
+    }
+
+    public void teachNewCommand(String name, List<String> newCommands) {
+        Animal animal = null;
+        try {
+            animal = readAnimal(name);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        animal.addCommands(newCommands);
         repository.updateAnimal(animal);
     }
 
