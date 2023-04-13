@@ -35,14 +35,31 @@ public class Mapper {
 
     public Animal map(String line) {
         String[] lines = line.split(";");
+        if (lines.length < 3) {
+            throw new IllegalArgumentException("Invalid format of data in animals.scv file!");
+        }
         String[] lineCommands = lines[1].split(", ");
         List<String> listCommands = new ArrayList<>();
         for (String command : lineCommands) {
             listCommands.add(command);
         }
         try {
-            Animal animal =  new Cat(lines[0], listCommands);
-            return animal;
+            switch(lines[2]) {
+                case ("1"):
+                    return new Dog(lines[0], listCommands);
+                case ("2"):
+                    return new Cat(lines[0], listCommands);
+                case ("3"):
+                    return new Hamster(lines[0], listCommands);
+                case ("4"):
+                    return new Horse(lines[0], listCommands);
+                case ("5"):
+                    return new Camel(lines[0], listCommands);
+                case ("6"):
+                    return new Donkey(lines[0], listCommands);
+                default:
+                    throw new IllegalArgumentException("Invalid format of data in animals.scv file!");
+            }
         } catch (NumberFormatException e) {
             System.out.println("Invalid format of data in animals.scv file!");
         }
