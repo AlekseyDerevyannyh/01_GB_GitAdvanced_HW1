@@ -9,6 +9,7 @@ import java.util.Scanner;
 
 public class View {
     private final Controller controller;
+    private final Counter counter = new Counter();
 
     public View(Controller controller) {
         this.controller = controller;
@@ -95,7 +96,7 @@ public class View {
                         commands.add(command);
                         answer = prompt("Add another animal command? (y/n): ");
                     } while (answer.equalsIgnoreCase("y") || answer.equalsIgnoreCase("yes"));
-                    try {
+                    try (Counter count = counter.start()) {
                         switch (animalIndex) {
                             case (1):
                                 controller.saveAnimal(new Dog(name, commands));
@@ -119,10 +120,11 @@ public class View {
                                 System.out.println("Internal error!");
                                 break;
                         }
-                    } catch (IllegalArgumentException e) {
+                    } catch (Exception e) {
                         System.out.println(e.getMessage());
                         continue;
                     }
+                    counter.add();
                     break;
                 case ("3"):
                     name = prompt("Enter animal name: ");
@@ -154,6 +156,24 @@ public class View {
                 default:
                     System.out.println("Unknown command!");
                     break;
+            }
+        }
+    }
+
+    private static class Counter implements AutoCloseable {
+        private int count = 0;
+
+        public Counter start() {
+            count ++;
+            return this;
+        }
+        public void add() {
+            count ++;
+        }
+        @Override
+        public void close() throws Exception {
+            if (this.count == 1000) {
+                throw new Exception("Counter should be used in try-with-resources block!");
             }
         }
     }
