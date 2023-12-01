@@ -47,6 +47,11 @@ public class Controller {
         return false;
     }
 
+    public void editAnimal(Animal animal) {
+        validateAnimalData(animal);
+        repository.updateAnimal(animal);
+    }
+
     public void teachNewCommand(String name, List<String> newCommands) {
         Animal animal = null;
         try {
@@ -56,5 +61,9 @@ public class Controller {
         }
         animal.addCommands(newCommands);
         repository.updateAnimal(animal);
+    }
+
+    public void deleteAnimal(String name) {
+        repository.deleteAnimal(name);
     }
 }
