@@ -47,14 +47,14 @@ public class Repository {
         throw new IllegalStateException("Animal not found!");
     }
 
-    public void deleteAnimal(String name) {
+    public void deleteToy(String name) {
         List<Animal> animals = getAllAnimals();
         animals.remove(findAnimal(name, animals));
         saveAnimals(animals);
     }
 
     public void updateAnimal(Animal animal) {
-        deleteAnimal(animal.getName());
+        deleteToy(animal.getName());
         List<Animal> animals = getAllAnimals();
         saveAnimal(animal, animals);
     }
