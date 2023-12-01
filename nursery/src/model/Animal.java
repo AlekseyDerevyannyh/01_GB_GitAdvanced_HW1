@@ -16,8 +16,8 @@ public abstract class Animal {
         this.commands = commands;
     }
 
-    public void addCommands(List<String> commands) {
-        this.commands.addAll(commands);
+    private void addCommand(String command) {
+        this.commands.add(command);
     }
 
     public String getName() {

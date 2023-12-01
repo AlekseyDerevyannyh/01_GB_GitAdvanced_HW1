@@ -5,8 +5,15 @@ import java.util.List;
 
 public class Mapper {
     public String map(Animal animal) {
-
-        String commandsStr = mapListToStr(animal.getCommands());
+        StringBuilder commandsStr = new StringBuilder();
+        List<String> commands = animal.getCommands();
+        for (String command : commands) {
+            commandsStr.append(command);
+            commandsStr.append(", ");
+        }
+        if (commandsStr.length() > 2) {
+            commandsStr.setLength(commandsStr.length() - 2);
+        }
 
         if (animal instanceof Dog) {
             return String.format("%s;%s;%d", animal.getName(), commandsStr, 1);
@@ -24,20 +31,6 @@ public class Mapper {
             throw new IllegalArgumentException("Internal error! Object Animal have unknown type");
         }
 
-    }
-
-    public static String mapListToStr(List<String> strings) {
-        StringBuilder result = new StringBuilder();
-        for (String string : strings) {
-            if (!string.isEmpty()) {
-                result.append(string);
-                result.append(", ");
-            }
-        }
-        if (result.length() != 0) {
-            result.setLength(result.length() - 2);
-        }
-        return String.valueOf(result);
     }
 
     public Animal map(String line) {
